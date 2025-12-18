@@ -111,7 +111,7 @@ class AdminController extends Controller
     public function approveKKN($id)
     {
         DB::table('pendaftar_kkn')->where('id', $id)->update([
-            'status' => 'DISETUJUI',
+            'status' => 'diterima',
             'tanggal_konfirmasi' => now()->toDateString()
         ]);
         return back();
@@ -120,7 +120,7 @@ class AdminController extends Controller
     public function rejectKKN($id)
     {
         DB::table('pendaftar_kkn')->where('id', $id)->update([
-            'status' => 'DITOLAK',
+            'status' => 'ditolak',
             'tanggal_konfirmasi' => now()->toDateString()
         ]);
         return back();
@@ -250,4 +250,21 @@ class AdminController extends Controller
         return back()->with('success', 'Pesanan berhasil disetujui & siap dikirim!');
     }
 
+    // D. Tolak Pesanan
+    public function rejectOrder(Request $request, $trxId)
+    {
+        if (!session('admin_id')) return redirect('/admin/login');
+
+        $request->validate([
+            'alasan' => 'required|string|max:255'
+        ]);
+
+        Membeli::where('trx_id', $trxId)->update([
+            'status' => 'DITOLAK',
+            'alasan_penolakan' => $request->alasan,
+            'updated_at' => now()
+        ]);
+
+        return back()->with('success', 'Pesanan berhasil ditolak.');
+    }
 }

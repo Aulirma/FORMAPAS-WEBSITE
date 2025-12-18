@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Membeli;
 
 class UsersController extends Controller
 {
@@ -25,12 +26,6 @@ class UsersController extends Controller
         ]);
 
         $user = Auth::user();
-
-        if (empty($user->USER_PASSWORD)) {
-            return back()->withErrors([
-                'old_password' => 'Password belum tersimpan dengan benar'
-            ]);
-        }
 
         if (!Hash::check($request->old_password, $user->USER_PASSWORD)) {
             return back()->withErrors([
@@ -70,27 +65,54 @@ class UsersController extends Controller
     public function deleteAccount()
     {
         $user = Auth::user();
-
         Auth::logout();
         $user->delete();
 
         return redirect('/')->with('success', 'Akun berhasil dihapus');
     }
 
+    /* =======================
+     | MERCH HISTORY
+     =======================*/
     public function merchHistory()
     {
-        // 1. Ambil NIK user yang sedang login
         $nik = Auth::user()->NIK;
 
-        // 2. Ambil data pembelian, di-join dengan tabel product biar dapat nama & gambar
         $history = DB::table('membeli')
             ->join('product', 'membeli.ID_PRODUCT', '=', 'product.ID_PRODUCT')
-            ->where('membeli.NIK', $nik) // Filter cuma punya user ini
+            ->where('membeli.NIK', $nik)
             ->select('membeli.*', 'product.NAMA_PRODUCT', 'product.FOTO_PRODUCT')
-            ->orderBy('membeli.created_at', 'desc') // Yang terbaru di atas
+            ->orderBy('membeli.created_at', 'desc')
             ->get();
 
-        // 3. Kirim data $history ke view
         return view('user.merch', compact('history'));
+    }
+
+    /* =====================================================
+     | KONFIRMASI BARANG DITERIMA
+     | SIAP_KIRIM → SELESAI
+     ===================================================== */
+    public function confirmOrderReceived($trxId)
+    {
+        $nik = Auth::user()->NIK;
+
+        $updated = Membeli::where('trx_id', $trxId)
+            ->where('NIK', $nik)
+            ->where('status', 'SIAP_KIRIM')
+            ->update([
+                'status' => 'SELESAI',
+                'updated_at' => now()
+            ]);
+
+        if ($updated === 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Pesanan tidak valid atau belum dikirim'
+            ], 403);
+        }
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }

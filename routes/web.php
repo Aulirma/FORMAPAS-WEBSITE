@@ -77,7 +77,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-
         Route::put('/user/update-password', 
             [UsersController::class, 'updatePassword']
         )->name('user.update.pw');
@@ -89,6 +88,21 @@ Route::middleware('auth')->group(function () {
         Route::delete('/delete-account', 
             [UsersController::class, 'deleteAccount']
         )->name('user.delete');
+
+    Route::middleware('auth')->group(function () {
+
+        // status merchandise (existing)
+        Route::get('/user/merch',
+            [UsersController::class, 'merchHistory']
+        )->name('user.merch');
+
+        // 🔥 KONFIRMASI BARANG DITERIMA
+        Route::post('/user/orders/{trxId}/selesai',
+            [UsersController::class, 'confirmOrderReceived']
+        )->name('user.orders.selesai');
+
+    });
+        
     });
 
 /* -----------------------

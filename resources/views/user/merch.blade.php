@@ -89,17 +89,26 @@
                           {{-- 5. Status Badge --}}
                           <td class="px-6 py-4 text-center">
                               @if($item->status == 'MENUNGGU')
-                                  <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full border border-yellow-200">
-                                      ⏳ Menunggu
-                                  </span>
+                                <span class="bg-yellow-100 text-yellow-800 text-xs font-bold px-3 py-1 rounded-full border border-yellow-200">
+                                    ⏳ Menunggu
+                                </span>
                               @elseif($item->status == 'SIAP_KIRIM' || $item->status == 'DISETUJUI')
-                                  <span class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full border border-blue-200">
-                                      📦 Siap Kirim
-                                  </span>
+                                <button
+                                    type="button"
+                                    class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full border border-blue-200 hover:bg-blue-200 transition"
+                                    onclick="confirmReceived('{{ $item->trx_id }}')"
+                                >
+                                    📦 Siap Kirim
+                                </button>
                               @elseif($item->status == 'SELESAI')
                                   <span class="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full border border-green-200">
                                       ✅ Selesai
                                   </span>
+                              @elseif($item->status == 'DITOLAK')
+                                    <button type="button" class="bg-red-100 text-red-800 text-xs font-bold px-3 py-1 rounded-full border border-red-200 hover:bg-red-200 transition"
+                                        data-alasan="{{ $item->alasan_penolakan }}" onclick="showAlasan(this)">
+                                        ❌ Ditolak
+                                    </button>
                               @else
                                   <span class="bg-red-100 text-red-800 text-xs font-bold px-3 py-1 rounded-full border border-red-200">
                                       {{ $item->status }}
@@ -119,7 +128,52 @@
       @endif
   </div>
 
-  @include('footer') {{-- Asumsi ada footer --}}
+  @include('footer') 
+    <script>
+        function showAlasan(el) {
+            const alasan = el.dataset.alasan || 'Tidak ada alasan yang diberikan';
+
+            // Modal native compiling Tailwind style
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black/40 flex items-center justify-center z-50';
+
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl shadow-lg max-w-sm w-full p-6 relative">
+                    <h3 class="text-lg font-bold text-red-600 mb-2">Alasan Penolakan</h3>
+                    <p class="text-sm text-gray-700 italic">"${alasan}"</p>
+
+                    <button 
+                        onclick="this.closest('.fixed').remove()"
+                        class="mt-4 w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
+                    >
+                        Tutup
+                    </button>
+                </div>
+            `;
+
+            document.body.appendChild(modal);
+        }
+        
+    function confirmReceived(trxId) {
+        if (!confirm('Apakah barang sudah benar-benar diterima?')) return;
+
+        fetch(`/user/orders/${trxId}/selesai`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert(data.message || 'Gagal mengonfirmasi pesanan');
+            }
+        });
+    }
+    </script>
 
 </body>
 </html>

@@ -20,6 +20,7 @@ class Membeli extends Model
         "alamat_pengiriman",  
         "no_wa",             
         "status",
+        "alasan_penolakan",
         "created_at",
         "updated_at"       
     ];

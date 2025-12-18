@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Formapals</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#FFF4E6] min-h-screen">
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+
+        <!-- HEADER -->
+        <div class="flex items-center justify-between mb-6">
+            <a 
+                href="<?php echo e(route('admin.dashboard')); ?>" 
+                class="flex items-center gap-2 text-orange-500 hover:text-orange-700 font-semibold transition">
+                <span class="text-xl">←</span>
+                <span>Kembali ke Dashboard</span>
+            </a>
+
+            <h1 class="text-2xl font-bold text-gray-800">
+                Daftar Formapals
+            </h1>
+        </div>
+
+        <!-- ALERT SUCCESS -->
+        <?php if(session('success')): ?>
+            <div class="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-700">
+                <?php echo e(session('success')); ?>
+
+            </div>
+        <?php endif; ?>
+
+        <!-- TABLE -->
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white rounded-xl shadow-sm overflow-hidden">
+                <thead class="bg-orange-100 text-gray-700">
+                    <tr>
+                        <th class="py-3 px-4 text-left">NIK</th>
+                        <th class="py-3 px-4 text-left">Nama</th>
+                        <th class="py-3 px-4 text-left">Email</th>
+                        <th class="py-3 px-4 text-left">MBTI Result</th>
+                        <th class="py-3 px-4 text-center">Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y">
+                    <?php $__empty_1 = true; $__currentLoopData = $users; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $u): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                        <tr class="hover:bg-orange-50 transition">
+                            <td class="py-3 px-4"><?php echo e($u->NIK); ?></td>
+                            <td class="py-3 px-4 font-medium"><?php echo e($u->USER_NAME); ?></td>
+                            <td class="py-3 px-4 text-gray-600"><?php echo e($u->USER_EMAIL); ?></td>
+                            <td class="py-3 px-4">
+                                <?php echo e($u->MBTI_RESULT ?? '-'); ?>
+
+                            </td>
+                            <td class="py-3 px-4 text-center">
+                                <form 
+                                    action="<?php echo e(route('formapals.delete', $u->NIK)); ?>" 
+                                    method="POST" 
+                                    onsubmit="return confirm('Yakin ingin menghapus user ini?')">
+                                    <?php echo csrf_field(); ?>
+                                    <?php echo method_field('DELETE'); ?>
+                                    <button 
+                                        type="submit"
+                                        class="rounded-lg bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600 transition">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+                        <tr>
+                            <td colspan="5" class="py-6 text-center text-gray-500">
+                                Tidak ada data.
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+</html>
+<?php /**PATH C:\laragon\www\UAS\resources\views/admin/formapals.blade.php ENDPATH**/ ?>

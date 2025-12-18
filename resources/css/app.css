@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        /* Definisi Warna User */
+        :root {
+            --oren-utama: #db5400;
+            --oren-sub: #ff9336;
+            --oren-bg: #f8e1ca;
+            --teks-gelap: #333333;
+            --teks-abu: #666666;
+            --teks-putih: #ffffff;
+            --darkMode-bg: #4500db8a;
+            --darkMode-teks: #ffdbb6;
+        }
+
+        body {
+            background-color: var(--oren-bg); /* Background Halaman */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Utility Class untuk warna custom */
+        .text-oren-utama { color: var(--oren-utama); }
+        .text-gelap { color: var(--teks-gelap); }
+        .text-abu { color: var(--teks-abu); }
+        
+        /* Tombol Utama dengan Gradient Halus */
+        .btn-primary {
+            background-image: linear-gradient(to right, var(--oren-sub), var(--oren-utama));
+            color: var(--teks-putih);
+            box-shadow: 0 4px 15px rgba(219, 84, 0, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(219, 84, 0, 0.4);
+        }
+        .btn-primary:active {
+            transform: scale(0.95);
+        }
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Tombol Outline (Ghost) untuk Overlay */
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--teks-putih);
+            color: var(--teks-putih);
+        }
+        .btn-outline:hover {
+            background-color: var(--teks-putih);
+            color: var(--oren-utama);
+        }
+
+        /* -- LOGIKA ANIMASI SLIDING (PENTING) -- */
+        .container-auth {
+            position: relative;
+            overflow: hidden;
+            width: 850px;
+            max-width: 100%;
+            min-height: 550px;
+        }
+
+        .form-container {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            transition: all 0.6s ease-in-out;
+        }
+
+        /* Posisi Awal: Sign In ada di kiri (z-index 2), Sign Up di kiri tertumpuk (z-index 1) */
+        .sign-in-container {
+            left: 0;
+            width: 50%;
+            z-index: 2;
+        }
+
+        .sign-up-container {
+            left: 0;
+            width: 50%;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        /* Saat Panel Aktif (Pindah ke Mode Sign Up) */
+        .container-auth.right-panel-active .sign-in-container {
+            transform: translateX(100%);
+        }
+
+        .container-auth.right-panel-active .sign-up-container {
+            transform: translateX(100%);
+            opacity: 1;
+            z-index: 5;
+            animation: show 0.6s;
+        }
+
+        @keyframes show {
+            0%, 49.99% { opacity: 0; z-index: 1; }
+            50%, 100% { opacity: 1; z-index: 5; }
+        }
+
+        /* Overlay (Bagian Berwarna) */
+        .overlay-container {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            transition: transform 0.6s ease-in-out;
+            z-index: 100;
+        }
+
+        .container-auth.right-panel-active .overlay-container {
+            transform: translateX(-100%);
+        }
+
+        .overlay {
+            /* GRADASI PILIHAN UNTUK OREN */
+            background: linear-gradient(135deg, var(--oren-sub) 0%, var(--oren-utama) 100%);
+            
+            color: var(--teks-putih);
+            position: relative;
+            left: -100%;
+            height: 100%;
+            width: 200%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .container-auth.right-panel-active .overlay {
+            transform: translateX(50%);
+        }
+
+        .overlay-panel {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            top: 0;
+            height: 100%;
+            width: 50%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .overlay-left { transform: translateX(-20%); }
+        .container-auth.right-panel-active .overlay-left { transform: translateX(0); }
+        
+        .overlay-right { right: 0; transform: translateX(0); }
+        .container-auth.right-panel-active .overlay-right { transform: translateX(20%); }
+
+        /* Loader */
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--oren-utama);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Custom Input Style */
+        .input-custom {
+            background-color: #eee;
+            border: none;
+            padding: 12px 15px;
+            margin: 8px 0;
+            width: 100%;
+            border-radius: 8px;
+            outline: none;
+        }

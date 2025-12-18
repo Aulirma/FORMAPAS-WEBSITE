@@ -156,7 +156,7 @@
             <form action="{{ route('register') }}" method="POST" class="bg-white flex flex-col items-center justify-center h-full px-10 text-center">
                 @csrf
                 <h1 class="text-3xl font-bold mb-4 text-[var(--oren-utama)]">Buat Akun</h1>
-                <input type="text" name="USER_NAME" placeholder="Nama Lengkap" class="input-custom" required />
+                <input type="text" name="USER_NAME" placeholder="Username" class="input-custom" required />
                 <input type="text" name="NIK" placeholder="350606xxxxxxxxx" class="input-custom" required />
                 <input type="email" name="USER_EMAIL" placeholder="Email" class="input-custom" required />
                 <input type="password" name="USER_PASSWORD" placeholder="Password" class="input-custom" required />

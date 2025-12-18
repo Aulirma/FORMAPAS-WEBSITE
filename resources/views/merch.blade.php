@@ -131,7 +131,7 @@
       <section id="qrisBox" class="hidden bg-white p-6 rounded-xl shadow border text-center animate-fade-in">
         <h2 class="text-xl font-bold mb-2">Scan QRIS</h2>
         <div class="bg-white p-2 border inline-block rounded-lg">
-            <img src="images/qris.png" class="mx-auto w-48">
+            <img src="{{ asset('images/qris.JPEG') }}" class="mx-auto w-48">
         </div>
         <p class="mt-4 text-sm font-semibold animate-pulse text-red-500">
           Selesaikan dalam <span id="timer">10</span> detik

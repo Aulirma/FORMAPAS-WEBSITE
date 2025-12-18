@@ -48,7 +48,6 @@
             <h2 class="text-2xl font-bold text-[#db5400]">
                 <i class="fa-solid fa-cart-shopping mr-2"></i> PESANAN MASUK
             </h2>
-            <a href="{{ route('admin.orders.index') }}" class="text-sm text-blue-600 hover:underline">Lihat Semua Pesanan &rarr;</a>
         </div>
 
         <div class="overflow-x-auto">
@@ -271,9 +270,10 @@
                 <h2 class="text-xl font-bold text-gray-800">
                     <i class="fa-solid fa-newspaper mr-2"></i> NEWS
                 </h2>
-                <button class="bg-blue-600 text-white px-4 py-1 rounded text-sm font-bold hover:bg-blue-700 shadow-md">
+                <a href="{{ route('news.index') }}"
+                class="bg-blue-600 text-white px-4 py-1 rounded text-sm font-bold hover:bg-blue-700 shadow-md">
                     Kelola News →
-                </button>
+                </a>
             </div>
             <div class="p-4 flex-1">
                 <ul class="space-y-3">
